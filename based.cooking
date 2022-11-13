@@ -1,0 +1,19 @@
+#!/bin/sh
+echo "$(figlet Based)\n"
+echo "Powered by based.cooking, Written by Amoghavarsha, Twitter - @TheAmoghavarsha\n"
+
+curl -sL https://based.cooking/tags/ | awk -v RS='<[^>]+>' -v ORS= '1' | awk 'ORS="\t"' | column -t | sed -e 's/Based  Cooking  Tags//g' -e 's/Tags//g' -e 's/|   //g' -e 's/https:\/\/based.cooking\///g'
+
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+
+echo "What do you want to eat today?\n"
+read eat
+
+curl -sL https://based.cooking/tags/$eat | awk -v RS='<[^>]+>' -v ORS= '1' | column -t | tr -s ' ' | sed -e 's/https:\/\/based.cooking\///g' -e '1,2d'
+ 
+printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' =
+
+echo "What do you wanna eat in $eat? ENTER like 'naan-bread' - adding hypen inbetween recipes with two or more words\n " 
+read what
+
+curl -sL https://based.cooking/$what | awk -v RS='<[^>]+>' -v ORS= '1' | sed -e 's/https:\/\/based.cooking\///g' -e 's/&middot;/-/g' | sed '1,20d;' | head -n -9  
